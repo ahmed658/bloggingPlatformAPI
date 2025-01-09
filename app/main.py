@@ -4,5 +4,5 @@ blogApp = FastAPI()
 
 
 @blogApp.get("/")
-async def root():
+def root():
     return {"message": "Blog platform test"}
