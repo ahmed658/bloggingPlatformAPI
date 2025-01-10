@@ -10,6 +10,7 @@ This project is a RESTful API for a blogging platform designed with the followin
 - **Database Management**: Uses SQLAlchemy ORM for managing database schema and operation
 
 # API Documentation:
+
 ## Users Module
 
 ## Overview
@@ -761,4 +762,541 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     "message": "Access granted"
 }
 ```
+# API Documentation: Comments Module
 
+## Overview
+The **Comments Module** provides a set of endpoints for managing comments on blog posts. Users can create, retrieve, update, and delete comments. The module ensures that only the owner of a comment can modify or delete it, providing secure and controlled access.
+
+---
+
+## Comments Module
+
+## Endpoints
+
+### 1. Create a Comment
+**Method:** `POST`
+
+**URL:** `{{URL}}/comments/posts/{post_id}`
+
+**Description:** Adds a new comment to a specified blog post.
+
+**Implementation Details:**
+- Verifies that the blog post exists.
+- Associates the comment with the current authenticated user and the specified post.
+
+**Path Parameters:**
+- `post_id`: The ID of the blog post to comment on.
+
+**Request Body:**
+```json
+{
+    "content": "This is a comment."
+}
+```
+
+**Response:**
+- **201 Created:** Comment successfully added.
+  ```json
+  {
+      "comment_id": 1,
+      "blog_post_id": 123,
+      "content": "This is a comment.",
+      "created_at": "2025-01-11T10:00:00Z",
+      "updated_at": "2025-01-11T10:00:00Z",
+      "like_count": 0,
+      "author": {
+          "username": "user123",
+          "first_name": "John",
+          "last_name": "Doe"
+      }
+  }
+  ```
+
+**Schemas:**
+- **Request:** `CommentCreate`
+- **Response:** `CommentReturn`
+
+---
+
+### 2. Retrieve Comments for a Blog Post
+**Method:** `GET`
+
+**URL:** `{{URL}}/comments/posts/{post_id}`
+
+**Description:** Retrieves a list of comments for a specified blog post, with optional pagination.
+
+**Path Parameters:**
+- `post_id`: The ID of the blog post to retrieve comments for.
+
+**Query Parameters:**
+- `limit`: The maximum number of comments to retrieve (default: 10).
+- `skip`: The number of comments to skip (default: 0).
+
+**Response:**
+- **200 OK:** List of comments for the specified post.
+  ```json
+  [
+      {
+          "comment_id": 1,
+          "blog_post_id": 123,
+          "content": "This is a comment.",
+          "created_at": "2025-01-11T10:00:00Z",
+          "updated_at": "2025-01-11T10:00:00Z",
+          "like_count": 0,
+          "author": {
+              "username": "user123",
+              "first_name": "John",
+              "last_name": "Doe"
+          }
+      }
+  ]
+  ```
+
+**Schemas:**
+- **Response:** `List[CommentReturn]`
+
+---
+
+### 3. Retrieve a Single Comment
+**Method:** `GET`
+
+**URL:** `{{URL}}/comments/{id}`
+
+**Description:** Retrieves the details of a specific comment by its ID.
+
+**Path Parameters:**
+- `id`: The ID of the comment to retrieve.
+
+**Response:**
+- **200 OK:** The details of the comment.
+  ```json
+  {
+      "comment_id": 1,
+      "blog_post_id": 123,
+      "content": "This is a comment.",
+      "created_at": "2025-01-11T10:00:00Z",
+      "updated_at": "2025-01-11T10:00:00Z",
+      "like_count": 0,
+      "author": {
+          "username": "user123",
+          "first_name": "John",
+          "last_name": "Doe"
+      }
+  }
+  ```
+
+**Schemas:**
+- **Response:** `CommentReturn`
+
+---
+
+### 4. Update a Comment
+**Method:** `PUT`
+
+**URL:** `{{URL}}/comments/{id}`
+
+**Description:** Updates the content of an existing comment. Only the owner of the comment can perform this action.
+
+**Path Parameters:**
+- `id`: The ID of the comment to update.
+
+**Request Body:**
+```json
+{
+    "content": "Updated comment content."
+}
+```
+
+**Response:**
+- **200 OK:** The updated comment.
+  ```json
+  {
+      "comment_id": 1,
+      "blog_post_id": 123,
+      "content": "Updated comment content.",
+      "created_at": "2025-01-11T10:00:00Z",
+      "updated_at": "2025-01-11T11:00:00Z",
+      "like_count": 0,
+      "author": {
+          "username": "user123",
+          "first_name": "John",
+          "last_name": "Doe"
+      }
+  }
+  ```
+
+**Schemas:**
+- **Request:** `CommentCreate`
+- **Response:** `CommentReturn`
+
+---
+
+### 5. Delete a Comment
+**Method:** `DELETE`
+
+**URL:** `{{URL}}/comments/{id}`
+
+**Description:** Deletes a specific comment. Only the owner of the comment can perform this action.
+
+**Path Parameters:**
+- `id`: The ID of the comment to delete.
+
+**Response:**
+- **204 No Content:** Comment successfully deleted.
+
+---
+
+## Error Responses
+
+### 1. Blog Post Not Found
+**HTTP Status Code:** `404 Not Found`
+
+**Description:** Raised when the specified blog post ID does not exist.
+
+**Response Example:**
+```json
+{
+    "detail": "Blog post with ID 123 was not found."
+}
+```
+
+### 2. Comment Not Found
+**HTTP Status Code:** `404 Not Found`
+
+**Description:** Raised when the specified comment ID does not exist.
+
+**Response Example:**
+```json
+{
+    "detail": "Comment with ID 1 was not found."
+}
+```
+
+### 3. Forbidden Action
+**HTTP Status Code:** `403 Forbidden`
+
+**Description:** Raised when a user attempts to update or delete a comment they do not own.
+
+**Response Example:**
+```json
+{
+    "detail": "Comment with ID 1 doesn't belong to the current user."
+}
+```
+
+---
+
+## Models
+
+### CommentCreate Schema
+```python
+class CommentCreate(BaseModel):
+    content: str
+```
+
+### CommentReturn Schema
+```python
+class CommentReturn(BaseModel):
+    comment_id: int
+    blog_post_id: int
+    content: str
+    created_at: datetime
+    updated_at: datetime
+    like_count: int
+    author: UserOutPublic
+```
+
+---
+
+## Security and Best Practices
+
+1. **User Authentication:**
+   - Endpoints require the user to be authenticated via JWT tokens.
+
+2. **Authorization:**
+   - Only the owner of a comment can update or delete it.
+
+3. **Error Handling:**
+   - Detailed error messages are provided for invalid actions or non-existent resources.
+
+4. **Pagination:**
+   - Use `limit` and `skip` query parameters for efficient retrieval of comments on a blog post.
+---
+
+
+## Likes Module
+
+## Overview
+The **Likes Module** provides endpoints to manage likes on blog posts and comments. Users can like or unlike posts and comments and retrieve a list of users who have liked a specific post or comment. The module ensures proper validation and prevents duplicate actions (e.g., liking the same post twice).
+
+---
+
+## Endpoints
+
+### 1. Like a Post
+**Method:** `POST`
+
+**URL:** `{{URL}}/likes/posts/{post_id}`
+
+**Description:** Adds a like to a specified blog post.
+
+**Implementation Details:**
+- Checks if the blog post exists.
+- Ensures the user has not already liked the post.
+- Increments the like count for the post.
+
+**Path Parameters:**
+- `post_id`: The ID of the blog post to like.
+
+**Response:**
+- **201 Created:** Post successfully liked.
+  ```json
+  {
+      "message": "Post 1 liked successfully.",
+      "like_count": 10
+  }
+  ```
+
+**Schemas:**
+- **Response:** `PostLikeResponse`
+
+---
+
+### 2. Unlike a Post
+**Method:** `DELETE`
+
+**URL:** `{{URL}}/likes/posts/{post_id}`
+
+**Description:** Removes a like from a specified blog post.
+
+**Implementation Details:**
+- Checks if the blog post exists.
+- Ensures the user has previously liked the post.
+- Decrements the like count for the post.
+
+**Path Parameters:**
+- `post_id`: The ID of the blog post to unlike.
+
+**Response:**
+- **200 OK:** Post successfully unliked.
+  ```json
+  {
+      "message": "Post 1 unliked successfully.",
+      "like_count": 9
+  }
+  ```
+
+**Schemas:**
+- **Response:** `PostLikeResponse`
+
+---
+
+### 3. Like a Comment
+**Method:** `POST`
+
+**URL:** `{{URL}}/likes/comments/{comment_id}`
+
+**Description:** Adds a like to a specified comment.
+
+**Implementation Details:**
+- Checks if the comment exists.
+- Ensures the user has not already liked the comment.
+- Increments the like count for the comment.
+
+**Path Parameters:**
+- `comment_id`: The ID of the comment to like.
+
+**Response:**
+- **201 Created:** Comment successfully liked.
+  ```json
+  {
+      "message": "Comment 1 liked successfully.",
+      "like_count": 5
+  }
+  ```
+
+**Schemas:**
+- **Response:** `CommentLikeResponse`
+
+---
+
+### 4. Unlike a Comment
+**Method:** `DELETE`
+
+**URL:** `{{URL}}/likes/comments/{comment_id}`
+
+**Description:** Removes a like from a specified comment.
+
+**Implementation Details:**
+- Checks if the comment exists.
+- Ensures the user has previously liked the comment.
+- Decrements the like count for the comment.
+
+**Path Parameters:**
+- `comment_id`: The ID of the comment to unlike.
+
+**Response:**
+- **200 OK:** Comment successfully unliked.
+  ```json
+  {
+      "message": "Comment 1 unliked successfully.",
+      "like_count": 4
+  }
+  ```
+
+**Schemas:**
+- **Response:** `CommentLikeResponse`
+
+---
+
+### 5. Get Users Who Liked a Post
+**Method:** `GET`
+
+**URL:** `{{URL}}/likes/posts/{post_id}/users`
+
+**Description:** Retrieves a list of users who liked a specified blog post.
+
+**Path Parameters:**
+- `post_id`: The ID of the blog post.
+
+**Query Parameters:**
+- `limit`: The maximum number of users to retrieve (default: 10).
+- `skip`: The number of users to skip (default: 0).
+
+**Response:**
+- **200 OK:** List of users who liked the post.
+  ```json
+  [
+      {
+          "username": "user123",
+          "first_name": "John",
+          "last_name": "Doe"
+      },
+      {
+          "username": "user456",
+          "first_name": "Jane",
+          "last_name": "Smith"
+      }
+  ]
+  ```
+
+**Schemas:**
+- **Response:** `List[UserOutPublic]`
+
+---
+
+### 6. Get Users Who Liked a Comment
+**Method:** `GET`
+
+**URL:** `{{URL}}/likes/comments/{comment_id}/users`
+
+**Description:** Retrieves a list of users who liked a specified comment.
+
+**Path Parameters:**
+- `comment_id`: The ID of the comment.
+
+**Query Parameters:**
+- `limit`: The maximum number of users to retrieve (default: 10).
+- `skip`: The number of users to skip (default: 0).
+
+**Response:**
+- **200 OK:** List of users who liked the comment.
+  ```json
+  [
+      {
+          "username": "user123",
+          "first_name": "John",
+          "last_name": "Doe"
+      },
+      {
+          "username": "user456",
+          "first_name": "Jane",
+          "last_name": "Smith"
+      }
+  ]
+  ```
+
+**Schemas:**
+- **Response:** `List[UserOutPublic]`
+
+---
+
+## Error Responses
+
+### 1. Resource Not Found
+**HTTP Status Code:** `404 Not Found`
+
+**Description:** Raised when the specified post or comment does not exist.
+
+**Response Example:**
+```json
+{
+    "detail": "Post with ID 1 does not exist."
+}
+```
+
+### 2. Already Liked
+**HTTP Status Code:** `409 Conflict`
+
+**Description:** Raised when the user tries to like a post or comment they have already liked.
+
+**Response Example:**
+```json
+{
+    "detail": "You have already liked post 1."
+}
+```
+
+### 3. Not Liked
+**HTTP Status Code:** `404 Not Found`
+
+**Description:** Raised when the user tries to unlike a post or comment they have not previously liked.
+
+**Response Example:**
+```json
+{
+    "detail": "You haven't liked post 1."
+}
+```
+
+---
+
+## Models
+
+### PostLikeResponse Schema
+```python
+class PostLikeResponse(BaseModel):
+    message: str
+    like_count: int
+```
+
+### CommentLikeResponse Schema
+```python
+class CommentLikeResponse(BaseModel):
+    message: str
+    like_count: int
+```
+
+### UserOutPublic Schema
+```python
+class UserOutPublic(BaseModel):
+    username: str
+    first_name: str
+    last_name: str
+```
+
+---
+
+## Security and Best Practices
+
+1. **User Authentication:**
+   - Endpoints require user authentication via JWT tokens.
+
+2. **Duplicate Prevention:**
+   - Validates actions to prevent duplicate likes or unlikes.
+
+3. **Error Handling:**
+   - Detailed error messages ensure proper feedback for invalid actions.
+
+4. **Pagination:**
+   - Use `limit` and `skip` query parameters for efficient retrieval of users who liked a post or comment.
