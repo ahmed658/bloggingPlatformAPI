@@ -4,3 +4,8 @@ psycopg2-binary
 alembic
 pydantic
 pydantic_settings
+pydantic-extra-types
+phonenumbers
+passlib
+bcrypt
+pyjwt

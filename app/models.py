@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, func, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Date, func, UniqueConstraint, Boolean
 from sqlalchemy.sql.expression import text
 from sqlalchemy.orm import relationship
 from .database import Base
@@ -6,7 +6,7 @@ from .database import Base
 class User(Base):
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, primary_key=True, autoincrement=True)
     first_name = Column(String(length=50), nullable=False)
     last_name = Column(String(length=50), nullable=False)
     phone = Column(String(length=20), nullable=True, unique=True)
@@ -14,6 +14,8 @@ class User(Base):
     email = Column(String(100), unique=True, nullable=False)
     password = Column(String(255), nullable=False)
     created_at = Column(DateTime, server_default=func.now())
+    birthdate = Column(Date, nullable=True)
+    admin = Column(Boolean, nullable=False, server_default='False')
 
     # Relationships
     blog_posts = relationship('BlogPost', back_populates='author', cascade='all, delete-orphan')
@@ -25,8 +27,8 @@ class User(Base):
 class BlogPost(Base):
     __tablename__ = 'blog_posts'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    post_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('users.user_id', ondelete='CASCADE'), nullable=False)
     title = Column(String(100), nullable=False)
     content = Column(Text, nullable=False)
     created_at = Column(DateTime, server_default=func.now())
@@ -42,9 +44,9 @@ class BlogPost(Base):
 class Comment(Base):
     __tablename__ = 'comments'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    blog_post_id = Column(Integer, ForeignKey('blog_posts.id', ondelete='CASCADE'), nullable=False)
+    comment_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('users.user_id', ondelete='CASCADE'), nullable=False)
+    blog_post_id = Column(Integer, ForeignKey('blog_posts.post_id', ondelete='CASCADE'), nullable=False)
     content = Column(Text, nullable=False)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
@@ -60,8 +62,8 @@ class PostsLike(Base):
     __tablename__ = 'posts_likes'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    blog_post_id = Column(Integer, ForeignKey('blog_posts.id', ondelete='CASCADE'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.user_id', ondelete='CASCADE'), nullable=False)
+    blog_post_id = Column(Integer, ForeignKey('blog_posts.post_id', ondelete='CASCADE'), nullable=False)
     created_at = Column(DateTime, server_default=func.now())
 
     # Unique constraint
@@ -78,8 +80,8 @@ class CommentsLike(Base):
     __tablename__ = 'comments_likes'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    comment_id = Column(Integer, ForeignKey('comments.id', ondelete='CASCADE'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.user_id', ondelete='CASCADE'), nullable=False)
+    comment_id = Column(Integer, ForeignKey('comments.comment_id', ondelete='CASCADE'), nullable=False)
     created_at = Column(DateTime, server_default=func.now())
 
     # Unique constraint
