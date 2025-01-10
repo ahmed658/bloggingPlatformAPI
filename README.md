@@ -9,6 +9,130 @@ This project is a RESTful API for a blogging platform designed with the followin
 - **Like Functionality**: Users can like blog posts and comments.
 - **Database Management**: Uses SQLAlchemy ORM for managing database schema and operation
 
+# Setting Up the Project
+
+Follow these steps to configure and run the project locally.
+
+---
+
+## 1. Prerequisites
+
+- **Python 3.9+**: Ensure you have Python installed on your machine. You can download it [here](https://www.python.org/downloads/).
+- **PostgreSQL**: Install PostgreSQL and set up a database.
+
+---
+
+## 2. Clone the Repository
+
+Clone this repository to your local machine:
+
+```bash
+git clone <repository-url>
+cd <repository-folder>
+```
+
+---
+
+## 3. Install Dependencies
+
+Install the required Python dependencies using the `requirements.txt` file:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 4. Configure Environment Variables
+
+The project uses a `.env` file to manage sensitive settings. Create a `.env` file in the root directory and populate it with the following content:
+
+```env
+DATABASE_HOSTNAME="localhost"
+DATABASE_NAME="blogDB"
+database_port="5432"
+database_username="postgres"
+database_password="password"
+secret_key="2b0c852c5a7ec6feff08f3031b37c5aa071291aa77f703059efdee8342bb24a0"
+algorithm="HS256"
+access_token_expire_minutes=60
+root_pass="useThisPassToBeAbleToCreateAdminUsers"
+```
+
+### Customizing `.env`
+
+- Update `DATABASE_HOSTNAME`, `DATABASE_NAME`, `database_username`, `database_password`, and `database_port` based on your PostgreSQL setup.
+- Keep the `secret_key` secure and avoid sharing it publicly.
+- Modify `access_token_expire_minutes` if needed for token expiration duration.
+
+---
+
+## 5. Initialize the Database
+
+Before running the app, ensure your PostgreSQL database is set up and ready:
+
+1. Log in to PostgreSQL and create a database:
+   ```sql
+   CREATE DATABASE blogDB;
+   ```
+2. Verify the `.env` file matches your PostgreSQL credentials and database name.
+
+---
+
+## 6. Run the Application
+
+Start the FastAPI application:
+
+```bash
+python -m uvicorn app.main:blogApp --reload
+```
+
+### Accessing the Application
+- The app will run on `http://127.0.0.1:8000`.
+- Visit `http://127.0.0.1:8000/docs` for the interactive API documentation.
+
+---
+
+## 7. Postman Collection and Environment
+
+This project includes a Postman collection and environment to simplify API testing. You can find these files in the `postman` folder:
+
+- **Postman Collection**: `bloggingPlatformAPI.postman_collection.json`  
+  Contains all the endpoints for testing the APIs.
+
+- **Postman Environment**: `Blog Platform Env.postman_environment.json`  
+  Pre-configured environment variables for API testing.
+
+### Using Postman
+1. Open Postman.
+2. Import the collection and environment files:
+   - Go to **File > Import**.
+   - Select the JSON files from the `postman` folder.
+3. Set the active environment to **Blog Platform Env**.
+4. Start testing the API endpoints.
+
+---
+
+## 8. Running Tests
+
+The project includes unit tests written with `pytest`. To run the tests, execute:
+
+```bash
+pytest
+```
+
+---
+
+## Troubleshooting
+
+1. **Database Connection Errors**: Verify your `.env` file and PostgreSQL setup.
+2. **Dependency Issues**: Ensure all dependencies are installed using `pip install -r requirements.txt`.
+3. **Application Port Conflict**: Check if another application is using port `8000`.
+
+---
+
+You’re now ready to use the application! 🎉
+
 # API Documentation:
 
 ## Users Module
