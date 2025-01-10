@@ -18,6 +18,29 @@ Add **Redis** as the caching layer in order to decrease the amount of calls to t
 
 **Kubernetes Horizontal Pod Autoscalers (HPA):** For the application pods as well for the Redis clusters one needed to setup autoscaling depending on the traffic. Use the **AWS Auto Scaling Groups** for the automatic addition of Kubernetes nodes, as the workload rises. Another way is to track the systems’ performance with applications such as **Prometheus** and visualization tool **Grafana** to find problems before they occur, and to manage the resources effectively. Utilizing this active approach guarantees the specificity of the application and the quality of its work with 1 million users without increasing costs significantly.
 
+## Technologies and Libraries Used
+
+The application leverages a modern tech stack to ensure scalability, reliability, and high performance. Below is an overview of the key technologies and libraries used:
+
+### Backend
+- **FastAPI**: A modern, high-performance web framework for building APIs with Python 3.9+.
+- **SQLAlchemy**: An ORM (Object Relational Mapper) for database interactions.
+- **Pydantic**: Used for data validation and settings management.
+- **Passlib & bcrypt**: For password hashing and security.
+- **PyJWT**: For JSON Web Token (JWT) authentication.
+
+### Database
+- **PostgreSQL**: A powerful, open-source relational database for storing application data.
+
+### Testing
+- **pytest**: A framework for writing and running unit tests to ensure application reliability.
+
+### Additional Libraries
+- **psycopg2-binary**: PostgreSQL database adapter for Python.
+- **pydantic-extra-types**: Provides extended data types like phone numbers for validation.
+- **phonenumbers**: Library for parsing and validating phone numbers.
+
+
 # Setting Up the Project
 
 Follow these steps to configure and run the project locally.
