@@ -14,7 +14,7 @@ router = APIRouter(
     tags=["Users"]
 )
 
-@router.post("/", response_model=UserOut)
+@router.post("/", response_model=UserOut, status_code=status.HTTP_201_CREATED)
 def register_user(user_details: UserCreate, db: Session = Depends(get_db)):
     if user_details.admin and user_details.root_pass != settings.root_pass:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You are not allowed to create an admin user unless you have the master root password")

@@ -1,0 +1,753 @@
+{
+	"info": {
+		"_postman_id": "162f720f-d410-494b-9d89-63be590ad829",
+		"name": "bloggingPlatformAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22004901"
+	},
+	"item": [
+		{
+			"name": "Users Module",
+			"item": [
+				{
+					"name": "POST Request to register a user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"gammaassets-user\",\n    \"password\": \"password-for-gammaassets-user\",\n    \"first_name\": \"ahmed3\",\n    \"last_name\": \"maher\",\n    \"email\": \"ahmedmaherbf23@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/users",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT request to edit current user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWTuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"Edited First Name\",\n    \"phone\": \"+201001776665\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/users",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST request to login and get JWT token of a user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"JWTuser\", pm.response.json().access_token)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "gammaassets-user",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password-for-gammaassets-user",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST request to register an admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin1\",\n    \"email\": \"admin@gammaassets.com\",\n    \"password\": \"adminPassword\",\n    \"first_name\": \"Gamma\",\n    \"last_name\": \"Maher\",\n    \"admin\": \"True\",\n    \"root_pass\": \"useThisPassToBeAbleToCreateAdminUsers\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/users",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST request to login and get JWT token of an admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"JWTadmin\", pm.response.json().access_token)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "admin1",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "adminPassword",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Request to list users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWTadmin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/users",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE request to delete current user",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "gammaassets-user",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password-for-gammaassets-user",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/users",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE request to delete another user by admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWTadmin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/users/gammaassets-user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"users",
+								"gammaassets-user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Posts Module",
+			"item": [
+				{
+					"name": "POST request to create a blog post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWTuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\" : \"Post Title\",\n    \"content\" : \"Post Content\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/posts",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET request to retrieve posts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/posts",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET request to retrieve a post by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/posts/3",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"posts",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE request to remove a social media post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWTuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/posts/3",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"posts",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT request to edit a post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWTuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\" : \"Post Title Edited\",\n    \"content\" : \"Post Content Edited\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/posts/7",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"posts",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comments Module",
+			"item": [
+				{
+					"name": "POST request to add a comment to a post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWTuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"comment 1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/comments/posts/7",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"comments",
+								"posts",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET request to get comment by its ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/comments/2",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"comments",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET request to get comments of a post",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/comments/posts/7",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"comments",
+								"posts",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT request to edit a comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWTuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"edited comment\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/comments/9",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"comments",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE request to remove a comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWTuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/comments/9",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"comments",
+								"9"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Likes Module",
+			"item": [
+				{
+					"name": "POST request to like a post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWTuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/likes/posts/8",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"likes",
+								"posts",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE request to unlike a post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWTuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/likes/posts/8",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"likes",
+								"posts",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE request to unlike a comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWTuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/likes/comments/10",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"likes",
+								"comments",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST request to like a comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWTuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/likes/comments/10",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"likes",
+								"comments",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET request to get users who liked a post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWTuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/likes/posts/9/users",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"likes",
+								"posts",
+								"9",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET request to get users who liked a comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWTuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/likes/comments/9/users",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"likes",
+								"comments",
+								"9",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
