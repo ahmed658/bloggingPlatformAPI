@@ -301,10 +301,191 @@ class UserEdit(BaseModel):
 
 ---
 
-## Authentication
-### Token Schema
-```python
-class Token(BaseModel):
-    access_token: str
-    token_type: str
+## Posts Module Endpoints
+
+### 1. Create a Post
+**Method:** `POST`
+
+**URL:** `{{URL}}/posts`
+
+**Description:** Allows authenticated users to create a new blog post.
+
+**Implementation Details:**
+- Associates the post with the currently authenticated user.
+- Adds the new post to the database and refreshes it for the response.
+
+**Request Body:**
+
+```json
+{
+    "title": "Sample Post Title",
+    "content": "This is the content of the sample post."
+}
 ```
+
+**Response:**
+
+- **201 Created:** Post successfully created.
+  ```json
+  {
+      "post_id": 1,
+      "title": "Sample Post Title",
+      "content": "This is the content of the sample post.",
+      "created_at": "2025-01-11T00:00:00",
+      "updated_at": "2025-01-11T00:00:00",
+      "like_count": 0,
+      "author": {
+          "username": "user1",
+          "first_name": "John",
+          "last_name": "Doe"
+      }
+  }
+  ```
+
+**Schemas:**
+- **Request:** `PostCreate`
+- **Response:** `PostReturn`
+
+---
+
+### 2. Retrieve Posts
+**Method:** `GET`
+
+**URL:** `{{URL}}/posts`
+
+**Description:** Retrieves a list of posts with optional search and pagination.
+
+**Implementation Details:**
+
+- Supports searching by content.
+- Supports pagination using `limit` and `skip` query parameters.
+
+**Query Parameters:**
+
+- `limit`: Maximum number of posts to return (default: 10).
+- `skip`: Number of posts to skip (default: 0).
+- `search`: Search term for post content (optional).
+
+**Response:**
+
+- **200 OK:** List of posts.
+  ```json
+  [
+      {
+          "post_id": 1,
+          "title": "Sample Post Title",
+          "content": "This is the content of the sample post.",
+          "created_at": "2025-01-11T00:00:00",
+          "updated_at": "2025-01-11T00:00:00",
+          "like_count": 0,
+          "author": {
+              "username": "user1",
+              "first_name": "John",
+              "last_name": "Doe"
+          }
+      }
+  ]
+  ```
+
+**Schemas:**
+
+- **Response:** `List[PostReturn]`
+
+---
+
+### 3. Retrieve a Single Post
+**Method:** `GET`
+
+**URL:** `{{URL}}/posts/{id}`
+
+**Description:** Retrieves the details of a specific post by its ID.
+
+**Implementation Details:**
+
+- Validates that the post exists.
+
+**Response:**
+
+- **200 OK:** Post details.
+- **404 Not Found:** Post with the given ID does not exist.
+
+**Schemas:**
+
+- **Response:** `PostReturn`
+
+---
+
+### 4. Update a Post
+**Method:** `PUT`
+
+**URL:** `{{URL}}/posts/{id}`
+
+**Description:** Allows the author of a post to update its title and content.
+
+**Implementation Details:**
+
+- Verifies that the post exists and belongs to the current user.
+- Updates the post with the provided data.
+
+**Request Body:**
+
+```json
+{
+    "title": "Updated Post Title",
+    "content": "Updated content."
+}
+```
+
+**Response:**
+
+- **200 OK:** Post successfully updated.
+- **403 Forbidden:** Post does not belong to the current user.
+- **404 Not Found:** Post does not exist.
+
+**Schemas:**
+
+- **Request:** `PostCreate`
+- **Response:** `PostReturn`
+
+---
+
+### 5. Delete a Post
+**Method:** `DELETE`
+
+**URL:** `{{URL}}/posts/{id}`
+
+**Description:** Allows the author of a post to delete it.
+
+**Implementation Details:**
+
+- Verifies that the post exists and belongs to the current user.
+
+**Response:**
+
+- **204 No Content:** Post successfully deleted.
+- **403 Forbidden:** Post does not belong to the current user.
+- **404 Not Found:** Post does not exist.
+
+---
+
+
+### PostCreate Schema
+
+```python
+class PostCreate(BaseModel):
+    title: str
+    content: str
+```
+
+### PostReturn Schema
+
+```python
+class PostReturn(PostBase):
+    post_id: int
+    created_at: datetime
+    updated_at: datetime
+    like_count: int
+    author: UserOutPublic
+```
+
+
