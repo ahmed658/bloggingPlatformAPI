@@ -488,4 +488,277 @@ class PostReturn(PostBase):
     author: UserOutPublic
 ```
 
+## Authentication Module Endpoints
+
+### 1. User Login
+**Method:** `POST`
+
+**URL:** `{{URL}}/login`
+
+**Description:** Authenticates a user and generates a JWT token for accessing protected resources.
+
+**Implementation Details:**
+- Validates user credentials (username and password).
+- Verifies the password against the stored hash.
+- Generates a JWT token containing the user ID and expiration time.
+
+**Request Body (Form Data):**
+```json
+{
+    "username": "gammaassets-user",
+    "password": "password-for-gammaassets-user"
+}
+```
+
+**Response:**
+- **200 OK:** Login successful.
+  ```json
+  {
+      "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "token_type": "bearer"
+  }
+  ```
+
+**Error Responses:**
+- **403 Forbidden:** Invalid credentials provided.
+
+**Schemas:**
+- **Response:** `Token`
+
+---
+
+## Authentication Module Endpoints
+
+### 1. User Login
+**Method:** `POST`
+
+**URL:** `{{URL}}/login`
+
+**Description:** Authenticates a user and generates a JWT token for accessing protected resources.
+
+**Implementation Details:**
+- Validates user credentials (username and password).
+- Verifies the password against the stored hash.
+- Generates a JWT token containing the user ID and expiration time.
+
+**Request Body (Form Data):**
+```json
+{
+    "username": "gammaassets-user",
+    "password": "password-for-gammaassets-user"
+}
+```
+
+**Response:**
+- **200 OK:** Login successful.
+  ```json
+  {
+      "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "token_type": "bearer"
+  }
+  ```
+
+**Error Responses:**
+- **403 Forbidden:** Invalid credentials provided.
+
+**Schemas:**
+- **Response:** `Token`
+
+---
+
+## Authentication Services
+
+### 1. JWT Token Creation
+**Function:** `create_jwt_token`
+
+**Description:** Generates a JWT token containing user data and expiration information.
+
+**Implementation:**
+```python
+def create_jwt_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+```
+
+### 2. Verify Access Token
+**Function:** `verify_access_token`
+
+**Description:** Decodes and validates the JWT token, ensuring it is correctly formed and unexpired.
+
+**Implementation:**
+```python
+def verify_access_token(token: str, credentials_exception):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("user_id")
+        if user_id is None:
+            raise credentials_exception
+        return schemas.TokenData(id=user_id)
+    except InvalidTokenError:
+        raise credentials_exception
+```
+
+### 3. Get Current User
+**Function:** `get_current_user`
+
+**Description:** Retrieves the currently authenticated user based on the provided JWT token.
+
+**Implementation:**
+```python
+def get_current_user(token: str = Depends(oauth2_schema), db: Session = Depends(get_db)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    user_id = verify_access_token(token, credentials_exception).id
+    user = db.query(User).filter(User.user_id == user_id).first()
+    if not user:
+        raise credentials_exception
+    return user
+```
+
+---
+
+## Example Usage
+
+### Login Request
+**Request:**
+```http
+POST /login HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+username=exampleuser&password=examplepassword
+```
+
+**Response:**
+```json
+{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "token_type": "bearer"
+}
+```
+
+### Accessing a Protected Resource
+**Request:**
+```http
+GET /protected-resource HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Response:**
+```json
+{
+    "message": "Access granted"
+}
+```
+---
+
+## Error Responses
+
+### 1. Invalid Credentials
+**HTTP Status Code:** `403 Forbidden`
+
+**Description:** Raised when the username or password provided during login is incorrect.
+
+**Response Example:**
+```json
+{
+    "detail": "Invalid credentials"
+}
+```
+
+---
+
+### 2. Token Validation Failure
+**HTTP Status Code:** `401 Unauthorized`
+
+**Description:** Raised when the provided JWT token is invalid, expired, or missing required claims.
+
+**Response Example:**
+```json
+{
+    "detail": "Could not validate credentials"
+}
+```
+
+---
+
+## Models
+
+### 1. Token Schema
+**Purpose:** Represents the JWT token returned upon successful authentication.
+
+```python
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+```
+
+### 2. TokenData Schema
+**Purpose:** Represents the data extracted from a verified JWT token.
+
+```python
+class TokenData(BaseModel):
+    id: Optional[int] = None
+```
+
+---
+
+## Security and Best Practices
+
+1. **Password Hashing:**
+   - User passwords are hashed before being stored in the database.
+   - Use a secure hashing algorithm (e.g., bcrypt).
+
+2. **Token Expiry:**
+   - JWT tokens include an expiration time (`exp`) to limit their validity period.
+   - Refresh tokens can be implemented for long-term access if required.
+
+3. **HTTPS:**
+   - Ensure the application is deployed over HTTPS to protect sensitive data during transmission.
+
+4. **Bearer Token Format:**
+   - Tokens are transmitted using the `Authorization` header in the format: `Bearer <token>`.
+
+5. **Error Handling:**
+   - Detailed error messages should not reveal sensitive information.
+   - Use standard HTTP status codes for consistency.
+
+---
+
+## Example Usage
+
+### Login Request
+**Request:**
+```http
+POST /login HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+username=exampleuser&password=examplepassword
+```
+
+**Response:**
+```json
+{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "token_type": "bearer"
+}
+```
+
+### Accessing a Protected Resource
+**Request:**
+```http
+GET /protected-resource HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Response:**
+```json
+{
+    "message": "Access granted"
+}
+```
 
