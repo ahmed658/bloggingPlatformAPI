@@ -16,10 +16,10 @@ Runing the application in **multi-AZs** for failover and low-latency deployment.
 **AWS ELB** should be used to well distribute traffic across Kubernetes nodes to avoid some nodes getting congested with traffic.
 
 Add **Redis** as the caching layer in order to decrease the amount of calls to the database and increase performance for frequently requested data, with examples including user sessions and API responses. In terms of broad horizontal scalability and availability, the team should begin to set up **Redis Cluster**.
-For the database, I recommend **Amazon RDS with PostgreSQL** which is a managed service that helps in easy database hosting and maintenance by replicating the primary database to a master database that can now easily handle all the read traffic. To improve the performance of the database, there is use of indexing, query optimization, and partitioning techniques. These, combined with **Redis caching** to reduce the need for frequent database lookups for such data.
+For the database, I recommend **Amazon RDS with PostgreSQL** which is a managed service that helps in easy database hosting and maintenance by replicating the primary database to a master database that can now easily handle all the write traffic. To improve the performance of the database, we can use indexing, query optimization, and partitioning techniques. These, combined with **Redis caching** will reduce the need for frequent database lookups for such data.
 
-Utilize Kubernetes Horizontal Pod Autoscalers (HPA) for both application pods and Redis clusters to dynamically adjust based on traffic. 
-Leverage AWS Auto Scaling Groups to automatically scale  Monitor system performance using tools like **Prometheus** and Grafana, enabling proactive issue detection and efficient resource allocation.
+Utilize Kubernetes Horizontal Pod Autoscalers (HPA) for both application pods and Redis cluster nodes to dynamically adjust based on traffic. 
+Leverage AWS Auto Scaling Groups to automatically scale and monitor system performance using tools like **Prometheus** and Grafana, enabling proactive issue detection and efficient resource allocation with the use of cloud metrics and actions.
 
 ## Technologies and Libraries Used
 
