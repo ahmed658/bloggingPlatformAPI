@@ -25,6 +25,7 @@ The application leverages a modern tech stack to ensure scalability, reliability
 ### Backend
 - **FastAPI**: A modern, high-performance web framework for building APIs with Python 3.9+.
 - **SQLAlchemy**: An ORM (Object Relational Mapper) for database interactions.
+- **Alembic**: A database migration tool for SQLAlchemy
 - **Pydantic**: Used for data validation and settings management.
 - **Passlib & bcrypt**: For password hashing and security.
 - **PyJWT**: For JSON Web Token (JWT) authentication.
@@ -111,21 +112,50 @@ Before running the app, ensure your PostgreSQL database is set up and ready:
 
 ---
 
-## 6. Run the Application
+## 6. Set Up the Database
+   Initialize the database by applying Alembic migrations:
 
-Start the FastAPI application:
+   - **Upgrade the Database:**
+     ```bash
+     alembic upgrade head
+     ```
 
-```bash
-python -m uvicorn app.main:blogApp --reload
-```
+   - **Alembic Initial Migration Details:**
+     - Tables created: `users`, `blog_posts`, `comments`, `posts_likes`, `comments_likes`.
+     - Relationships:
+       - `users` table has relationships with `blog_posts`, `comments`, `posts_likes`, and `comments_likes`.
+       - `blog_posts` table has relationships with `users`, `comments`, and `posts_likes`.
+       - `comments` table has relationships with `users`, `blog_posts`, and `comments_likes`.
 
-### Accessing the Application
-- The app will run on `http://127.0.0.1:8000`.
-- Visit `http://127.0.0.1:8000/docs` for the interactive API documentation.
+   - **Rollback (if needed):**
+     ```bash
+     alembic downgrade -1
+     ```
+
+## 7. Run the Application
+   Start the FastAPI application:
+   ```bash
+   uvicorn app.main:blogApp --reload
+   ```
+
+   The app will be available at `http://127.0.0.1:8000`.
 
 ---
 
-## 7. Postman Collection and Environment
+### Summary of Alembic Migration
+- **Initial Migration ID:** `10240b4e307f`
+- **Tables Created:** `users`, `blog_posts`, `comments`, `posts_likes`, and `comments_likes`.
+- **Commands:**
+  - Upgrade: `alembic upgrade head`
+  - Downgrade: `alembic downgrade -1`
+
+---
+
+This ensures that your application is set up with proper database migrations and ready to run.
+
+---
+
+## 8. Postman Collection and Environment
 
 This project includes a Postman collection and environment to simplify API testing. You can find these files in the `postman` folder:
 
@@ -145,7 +175,7 @@ This project includes a Postman collection and environment to simplify API testi
 
 ---
 
-## 8. Running Tests
+## 9. Running Tests
 
 The project includes unit tests written with `pytest`. To run the tests, execute:
 
