@@ -160,6 +160,11 @@ This ensures that your application is set up with proper database migrations and
 
 ## 8. Postman Collection and Environment
 
+You can view the Postman documentation here:  
+[Postman API Documentation](https://documenter.getpostman.com/view/22004901/2sAYQWJtE3)
+
+This documentation complements the Postman collection and environment files available in the `postman/` folder of the project repository.
+
 This project includes a Postman collection and environment to simplify API testing. You can find these files in the `postman` folder:
 
 - **Postman Collection**: `bloggingPlatformAPI.postman_collection.json`  
@@ -199,6 +204,14 @@ pytest
 You’re now ready to use the application! 🎉
 
 # API Documentation:
+
+The API for the blogging platform is fully documented and available online via Postman. This includes details on all endpoints, request/response structures, and example payloads.
+
+You can view the Postman documentation here:  
+[Postman API Documentation](https://documenter.getpostman.com/view/22004901/2sAYQWJtE3)
+
+This documentation complements the Postman collection and environment files available in the `postman/` folder of the project repository.
+
 
 ## Users Module
 
