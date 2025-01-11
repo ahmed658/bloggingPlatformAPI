@@ -10,13 +10,16 @@ This project is a RESTful API for a blogging platform designed with the followin
 - **Database Management**: Uses SQLAlchemy ORM for managing database schema and operation
 
 In order to have this application service 1,000,000 users, I suggest making use of:
-**Kubernetes** will ensure high availability of containerized deployments because it can scale pods horizontally through CPU, memory, or application metrics like the number of requests received. Run the application in multi-AZs for failover and have an option to set up low-latency deployment. 
+**Kubernetes** will ensure safe and automated rollouts of updates and the availability of containerized deployments as the Autoscaler can scale pods horizontally through CPU, memory, or application metrics as the number of requests received. 
+Runing the application in **multi-AZs** for failover and low-latency deployment. 
 
-**AWS ELB** should be used to well distribute traffic across Kubernetes nodes to avoid some nodes getting congested with traffic, so, to effectively handle traffic volume. 
+**AWS ELB** should be used to well distribute traffic across Kubernetes nodes to avoid some nodes getting congested with traffic.
 
-Add **Redis** as the caching layer in order to decrease the amount of calls to the database and increase performance for frequently requested data, with examples including user sessions and API responses. In terms of broad horizontal scalability and availability, begin to set up **Redis Cluster**. For the database, use **Amazon RDS with PostgreSQL** which is an in-built service that helps in easy database hosting and maintenance by replicating the primary database to a master database that can now easily handle all the read traffic. To improve the performance of the database, there is use of indexing, query optimization, and partitioning techniques. These, combined with **Redis caching** to reduce the need for frequent database lookups for such data.
+Add **Redis** as the caching layer in order to decrease the amount of calls to the database and increase performance for frequently requested data, with examples including user sessions and API responses. In terms of broad horizontal scalability and availability, the team should begin to set up **Redis Cluster**.
+For the database, I recommend **Amazon RDS with PostgreSQL** which is a managed service that helps in easy database hosting and maintenance by replicating the primary database to a master database that can now easily handle all the read traffic. To improve the performance of the database, there is use of indexing, query optimization, and partitioning techniques. These, combined with **Redis caching** to reduce the need for frequent database lookups for such data.
 
-**Kubernetes Horizontal Pod Autoscalers (HPA):** For the application pods as well for the Redis clusters one needed to setup autoscaling depending on the traffic. Use the **AWS Auto Scaling Groups** for the automatic addition of Kubernetes nodes, as the workload rises. Another way is to track the systems’ performance with applications such as **Prometheus** and visualization tool **Grafana** to find problems before they occur, and to manage the resources effectively. Utilizing this active approach guarantees the specificity of the application and the quality of its work with 1 million users without increasing costs significantly.
+Utilize Kubernetes Horizontal Pod Autoscalers (HPA) for both application pods and Redis clusters to dynamically adjust based on traffic. 
+Leverage AWS Auto Scaling Groups to automatically scale  Monitor system performance using tools like **Prometheus** and Grafana, enabling proactive issue detection and efficient resource allocation.
 
 ## Technologies and Libraries Used
 
